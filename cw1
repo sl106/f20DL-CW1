@@ -1,0 +1,41 @@
+import csv
+import math
+import pandas as pd
+import numpy as np
+from csv import writer
+from random import shuffle
+
+# some models for classification and regression
+from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
+from sklearn.preprocessing import LabelEncoder
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+
+# model selection tools
+from sklearn.model_selection import KFold, train_test_split, GridSearchCV
+
+# metrics
+from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, precision_score, recall_score, confusion_matrix, classification_report
+
+from sklearn.naive_bayes import GaussianNB
+
+data = pd.read_csv('x_train_gr_smpl.csv')
+labels = pd.read_csv('y_train_smpl.csv')
+
+#Gaussian Naive Bayes
+def NG():
+    x_train, x_test, y_train, y_test = train_test_split(data, labels.values.ravel(), test_size = 0.2, random_state = 30)
+
+    model = GaussianNB()
+    model.fit(x_train,y_train)
+
+    predict = model.predict(x_test)
+    acc = accuracy_score(y_test, predict)
+
+    print(acc)
+    print(classification_report(y_test,predict))
+    print(confusion_matrix(y_test, predict))
+
+NG()
+
+
