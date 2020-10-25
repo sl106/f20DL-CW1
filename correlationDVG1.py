@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.utils import shuffle
 def getNTops(N,printBool):
     listG=[]
-    for i in range(0,1): #iterate trought all the dataset
+    for i in range(0,10): #iterate trought all the dataset
         X = pd.read_csv("x_train_gr_smpl.csv") #get value data
         Y = pd.read_csv("y_train_smpl_"+str(i)+".csv") #get output data
         #adding y as a column at the end of X (better method than the one i implemented)
