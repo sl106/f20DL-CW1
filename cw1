@@ -1,11 +1,12 @@
-import csv
+
 import math
 import pandas as pd
+from collections import Counter
 import numpy as np
-from csv import writer
-from random import shuffle
 
 # some models for classification and regression
+from scipy.stats import pearsonr
+from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.preprocessing import LabelEncoder
@@ -17,14 +18,36 @@ from sklearn.model_selection import KFold, train_test_split, GridSearchCV
 # metrics
 from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, precision_score, recall_score, confusion_matrix, classification_report
 
-from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import GaussianNB, MultinomialNB
+from sklearn.utils import shuffle
 
+#Read the datsets
 data = pd.read_csv('x_train_gr_smpl.csv')
 labels = pd.read_csv('y_train_smpl.csv')
 
+#Shuffle the data
+shuffle(data, random_state = 30)
+shuffle(labels, random_state = 30)
+
+pixels = set()
+
+#Multinomial Naive Bayes
+def multiNG(set):
+    x_train, x_test, y_train, y_test = train_test_split(set, labels.values.ravel(), test_size = 0.2)
+
+    model = MultinomialNB()
+    model.fit(x_train,y_train)
+
+    predict = model.predict(x_test)
+    acc = accuracy_score(y_test, predict)
+
+    print(acc)
+    print(classification_report(y_test,predict))
+    print(confusion_matrix(y_test, predict))
+
 #Gaussian Naive Bayes
-def NG():
-    x_train, x_test, y_train, y_test = train_test_split(data, labels.values.ravel(), test_size = 0.2, random_state = 30)
+def NG(set):
+    x_train, x_test, y_train, y_test = train_test_split(set, labels.values.ravel(), test_size = 0.2)
 
     model = GaussianNB()
     model.fit(x_train,y_train)
@@ -36,6 +59,51 @@ def NG():
     print(classification_report(y_test,predict))
     print(confusion_matrix(y_test, predict))
 
-NG()
+#NG(data)
 
+def correlation(sample,n):
 
+    data.insert(2304, "y", sample, allow_duplicates = False)
+    target_col_name = 'y'
+    feature_target_corr = {}
+    for col in data:
+        if target_col_name != col:
+            feature_target_corr[col] = pearsonr(data[col], data[target_col_name])[0]
+    #print("Feature-Target Correlations")
+    #print(feature_target_corr)
+
+    k = Counter(feature_target_corr)
+
+    # Finding n highest values
+    max = k.most_common(n)
+
+    #print("n highest values:")
+    #print("Pixel: Correlation")
+
+    for i in max:
+        #print(i[0], " :", i[1], " ")
+        pixels.add(str(i[0]))
+
+#correlation(x)
+
+def new_dataset():
+    #count = 0
+    for x in range(0,10):
+        file = pd.read_csv('y_train_smpl_' + str(x) + '.csv')
+        shuffle(file, random_state=30)
+        correlation(file, 20)
+        data.drop('y', inplace=True, axis=1)
+
+    #for i in pixels:
+    #    print (i)
+    #    count = count + 1
+    #print (count)
+
+    data_columns = data[pixels]
+    new_df = data_columns.copy()
+    print(new_df)
+
+    NG(new_df)
+    multiNG(new_df)
+
+new_dataset()
