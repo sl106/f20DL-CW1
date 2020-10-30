@@ -47,7 +47,7 @@ def multiNG(set):
 
 #Gaussian Naive Bayes
 def NG(set):
-    x_train, x_test, y_train, y_test = train_test_split(set, labels.values.ravel(), test_size = 0.2)
+    x_train, x_test, y_train, y_test = train_test_split(set, labels.values.ravel(), test_size = 0.3)
 
     model = GaussianNB()
     model.fit(x_train,y_train)
@@ -91,7 +91,7 @@ def new_dataset():
     for x in range(0,10):
         file = pd.read_csv('y_train_smpl_' + str(x) + '.csv')
         shuffle(file, random_state=30)
-        correlation(file, 20)
+        correlation(file, 5)
         data.drop('y', inplace=True, axis=1)
 
     #for i in pixels:
@@ -103,7 +103,11 @@ def new_dataset():
     new_df = data_columns.copy()
     print(new_df)
 
-    NG(new_df)
-    multiNG(new_df)
+    norm_df = preprocessing.normalize(new_df)
+
+    print(norm_df)
+
+    NG(norm_df)
+    multiNG(norm_df)
 
 new_dataset()
