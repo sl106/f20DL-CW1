@@ -87,7 +87,7 @@ def run():
 
     cmx = confusion_matrix(y_expect, y_pred)
 
-    # visual interpretation of the confusion matrix with normalisation and miscalculation focus
+    # visual interpretation of the confusion matrix with normalisation and miscalculation focus(https://kapernikov.com/tutorial-image-classification-with-scikit-learn/)
     def plot_confusion_matrix(cmx, vmax1=None, vmax2=None, vmax3=None):
         cmx_norm = 100 * cmx / cmx.sum(axis=1, keepdims=True)
         cmx_zero_diag = cmx_norm.copy()
