@@ -17,6 +17,7 @@ keys5 = []
 keys10 = []
 keys20 = []
 
+#compute correlations
 def correlations(path):
     X = pd.read_csv("resource/x_train_gr_smpl.csv")
     y = pd.read_csv(path)
@@ -26,7 +27,7 @@ def correlations(path):
     return corr_matrix["class"].sort_values(ascending=False).head(21)
 
 
-
+#put together top 10 pixels of each signs
 def makeNewSet(klist):
     tmp = klist.keys().values.tolist()
     tmp.remove("class")
@@ -35,11 +36,12 @@ def makeNewSet(klist):
     keys20.extend(tmp)
 
 
+#remove duplicates
 def removeDupliate(klist):
     tmp = list(set(klist))
     return tmp
 
-
+#helper function to produce file paths
 def run():
     for i in range(0, 10):
         # print("Top 10 most correlated pixels of sign " + str(i) + ":")
@@ -47,6 +49,7 @@ def run():
         makeNewSet(correlations(path))
 
 
+#export to cvs files
 def newCVS():
     print("running correlations")
     run()
@@ -63,10 +66,12 @@ def newCVS():
     new20 = X[nkeys20].copy()
     new20 = new20.reindex(sorted(new20.columns), axis=1)
     print("exporting to csv files")
-    new5.to_csv(r'resource/new51.csv', index = False, header=True)
-    new10.to_csv(r'resource/new101.csv', index=False, header=True)
-    new20.to_csv(r'resource/new201.csv', index=False, header=True)
+    new5.to_csv(r'resource/new50.csv', index = False, header=True)
+    new10.to_csv(r'resource/new100.csv', index=False, header=True)
+    new20.to_csv(r'resource/new200.csv', index=False, header=True)
     print("done!")
 
-# newCVS()
+newCVS()
+
+
 
